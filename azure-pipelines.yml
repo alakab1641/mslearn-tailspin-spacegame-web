@@ -1,13 +1,8 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
-- master
+- '*'
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-18.04'
   demands:
   - npm
 
@@ -16,25 +11,24 @@ variables:
 
 steps:
 - task: UseDotNet@2
- displayName: 'Use .Dot NetCore SDK 3.1.300'
- inputs:
-   packageType: sdk
-   version: 3.1.300
-
+  displayName: 'Use .NET Core SDK 3.1.300'
+  inputs:
+    packageType: sdk
+    version: 3.1.300
 
 - task: Npm@1
-  displayName: 'Run Npm Install' 
+  displayName: 'Run npm install'
   inputs:
-  verbose: 'false'  
+    verbose: false
 
 - script: './node_modules/.bin/node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.SpaceGame.Web/wwwroot'
-  displayName: 'Compile SaaS Assets'
+  displayName: 'Compile Sass assets'
 
 - task: gulp@1
   displayName: 'Run gulp tasks'
 
-- script: 'echo "$(Build.DefinitionName) , $(Build.BuildID) , $(Build.BuildNumber)" >buildinfo.txt'
-  displayName: 'Write Build Info'
+- script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
+  displayName: 'Write build info'
   workingDirectory: Tailspin.SpaceGame.Web/wwwroot
 
 - task: DotNetCoreCLI@2
